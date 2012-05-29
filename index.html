@@ -34,7 +34,7 @@
         width: 67%;
       }
       #reveal .oneliner {
-        padding-top : 20%;
+        padding-top : 15%;
         font-size : 1.4em;
       }
       #reveal .oneliner h3 {
@@ -154,7 +154,7 @@
         </section>
 
         <section data-markdown class="oneliner">
-          ## How about a module per file?
+          ## How about a *module per file*?
         </section>
 
         <section>
@@ -216,39 +216,234 @@
         </section>
 
         <section data-markdown class="oneliner">
-          ## *perks*.
+          # *perks*.
         </section>
+
+        <section data-markdown class="oneliner">
+          You can *find* your code.
+        </section>
+
+        <section data-markdown>
+          ## Code Reuse
+
+          <br />
+          <pre class="thin"><code contenteditable>require(['util/A'], function (A) {
+            A.hi = 5;
+          });
+          &nbsp;
+          // The same instance
+          require(['util/A'], function (A) {
+            A.hi === 5 // true
+          });
+          &nbsp;
+          // Or create new instances if you want!
+          </code></pre>
+
+        </section>
+
+        <section>
+          <section data-markdown>
+            ## Debugging
+
+            <br />
+            <pre><code contenteditable>There was an error in /util/A.js on line 65.</code></pre>
+
+          </section>
+
+          <section data-markdown>
+            ## Debugging but Worse
+
+            <br />
+            <pre><code contenteditable>There was an error in /built-app.js on line 19823.</code></pre>
+
+          </section>
+        </section>
+
+        <section>
+          <section data-markdown>
+            ## Anonymous defines
+
+            From
+            <pre><code contenteditable>define('some/module', function () {
+              ...
+            });
+            </code></pre>
+          </section>
+          <section data-markdown>
+            ## Anonymous defines
+
+            To
+            <pre><code contenteditable>define(/* just_use_the_filename, */ function () {
+              ...
+            });
+            </code></pre>
+          </section>
+        </section>
+
+        <section data-markdown class="oneliner">
+          When you no longer *require* a file.
+
+          It is no longer requested or included.
+
+          <br />
+
+          #### performance++
+        </section>
+
+        <section>
+          <section data-markdown>
+            ## Decoupled Mapping
+
+            Alias modules
+            <pre><code contenteditable>({
+              "paths" : {
+                "underscore" : "lodash"
+              }
+            })
+            </code></pre>
+
+            <br />
+            <pre><code contenteditable>require(['underscore'], function (_) {
+              _.isLodash === true
+            });
+            </code></pre>
+          </section>
+
+          <section data-markdown>
+            ## Decoupled Mapping
+
+            Lose ugly paths
+            <pre><code contenteditable>({
+              "paths" : {
+                "template" : "../../static/template"
+              }
+            })
+            </code></pre>
+
+            <br />
+            <pre><code contenteditable>require(['../../static/template/base'], ...);
+            // vs.
+            require(['template/base'], ...);
+            </code></pre>
+          </section>
+
+        </section>
+
+        <section>
+          <section data-markdown>
+            ## Hierarchy
+
+            <br />
+
+            With this file/folder structure
+
+            <pre class="thin"><code contenteditable>|+ App
+            &nbsp;|- jquery.js
+             |+ jquery
+              |- ui.js
+              |+ ui
+               |- draggable.js
+            </code></pre>
+
+
+            </code></pre>
+          </section>
+
+          <section data-markdown>
+            ## Hierarchy
+
+            <br />
+
+            The names can still be decent
+
+            <pre class="thin"><code contenteditable>require(['jquery'], ...);
+            </code></pre>
+          </section>
+
+          <section data-markdown>
+            ## Hierarchy
+
+            <br />
+
+            The names can still be decent
+
+            <pre class="thin"><code contenteditable>require(['jquery/ui'], ...);
+            </code></pre>
+          </section>
+
+          <section data-markdown>
+            ## Hierarchy
+
+            <br />
+
+            The names can still be decent
+
+            <pre class="thin"><code contenteditable>require(['jquery/ui/draggable'], ...);
+            </code></pre>
+          </section>
+
+          <section data-markdown class="oneliner">
+            In the end, you're left with
+            *easily traversable*
+            files that describe their contents, and most importantly, each maintain their own dependencies.
+          </section>
+        </section>
+
+        <section>
+          <section data-markdown class="oneliner">
+            ## Templates are treated as dependencies
+          </section>
+
+          <section data-markdown>
+            ## I'm so tired of this
+
+            <br />
+            <pre class="thin"><code contenteditable>...
+            &lt;/div&gt;
+            &lt;script type="text/tmpl" id="someTmpl"&gt;
+              {{data}}
+            &lt;/script&gt;
+            &lt;script type="text/tmpl" id="someTmpl2"&gt;
+              {{data}} 2
+            &lt;/script&gt;
+            &lt;/body&gt;
+            </code></pre>
+          </section>
+
+          <section data-markdown class="oneliner">
+            Unless you heavily cache your html payload
+            and need dynamic templates at runtime, you're
+            *hurting performance*.
+          </section>
+
+          <section data-markdown>
+            ## Minimally, pull in text
+
+            <br />
+            <pre><code contenteditable>// Ajax'd during development,
+            // Built as a string in production.
+            require(['text!tmpl/one'], function (tmplTxt) {
+              // compile and register template here.
+            });
+            </code></pre>
+
+            <br />
+
+            Better ways than this to come.
+          </section>
+
+          <section data-markdown class="oneliner">
+            ## Styles can be dependencies of templates as well
+          </section>
+
+          <section data-markdown class="oneliner">
+            ## Same goes for template helpers and UI Messages
+          </section>
+        </section>
+
 
 <!--
         # App Structure
-
-        poor performance
-
-        Side-benefit - anonymous module declarations based on file name
-
-        Regardless, you have atomic files for each component. This is often key to builds and actually reusing code. It even helps
-        debugging and learning curves.
-
-        Doesn't necessarily need to be coupled to the file system.
-
-          - Paths
-            - Last minute aliasing  "underscore" : "lodash"
-            - Prettier paths for custom file systems "templates/" : "../../templates/"
-
-        Most module systems will allow you to have a nice naming mechanism for sub-modules, etc
-
-          - require('jquery');
-          - require('jquery/ui');
-          - require('jquery/ui/draggable');
-
-        |-  jquery.js
-        |+ jquery
-         |-  ui.js
-         |+ ui
-          |-  draggable.js
-
-        In the end, you're left with easily traversable files that describe their contents, and most importantly, each maintain their own dependencies.
-
 
         # Templates never have a place to fit
 
