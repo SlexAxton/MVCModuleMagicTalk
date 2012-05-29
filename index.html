@@ -12,7 +12,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    <link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='css/fonts.css' rel='stylesheet' type='text/css'>
+    <!-- link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css' -->
 
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/main.css">
@@ -20,10 +21,17 @@
 
     <link rel="stylesheet" href="lib/zenburn.css">
     <style type="text/css">
+      body #reveal .slides {
+        width : 1280px;
+        margin-left : -640px;
+      }
       #reveal pre code {
         font-size : 34px;
         line-height : 38px;
         -webkit-filter: invert(1);
+      }
+      #reveal pre.thin {
+        width: 67%;
       }
       #reveal .oneliner {
         padding-top : 20%;
@@ -92,7 +100,7 @@
           ## Modules are not new
 
           <br />
-          <pre><code contenteditable>function Module () {
+          <pre class="thin"><code contenteditable>function Module () {
             return {
               someStuff: { ... }
             };
@@ -124,29 +132,97 @@
           ### *were made for each other*
         </section>
 
+        <section data-markdown class="oneliner">
+          # App Structure
+        </section>
+
+        <section data-markdown>
+          ## All too common
+
+          <br />
+          <pre class="thin"><code contenteditable>|+ App
+          &nbsp;|- app.js
+           |- controllers.js
+           |- models.js
+           |- views.js
+           |- index.html
+          </code></pre>
+
+          <br />
+
+          ### *Dependency management hell*
+        </section>
+
+        <section data-markdown class="oneliner">
+          ## How about a module per file?
+        </section>
+
+        <section>
+          <section data-markdown>
+            ## Option 1
+
+            <br />
+            <pre><code contenteditable>var UserModel = require('Models/User');
+            var UserView  = require('Views/User');
+            </code></pre>
+
+            Which results in this file structure
+
+            <pre class="thin"><code contenteditable>|+ App
+            &nbsp;|+ Models
+              |- User.js
+             |+ Views
+              |- User.js
+            </code></pre>
+
+          </section>
+
+          <section data-markdown>
+            ## Option 2
+
+            <br />
+            <pre><code contenteditable>var UserModel = require('User/Model');
+            var UserView  = require('User/View');
+            </code></pre>
+
+            Which results in this file structure
+
+            <pre class="thin"><code contenteditable>|+ App
+            &nbsp;|+ User
+              |- Model.js
+              |- View.js
+            </code></pre>
+          </section>
+
+          <section data-markdown>
+            ## Option 3
+
+            <br />
+            <pre><code contenteditable>var UserModel = require('UserModel');
+            var UserView  = require('UserView');
+            </code></pre>
+
+            Which results in this file structure
+
+            <pre class="thin"><code contenteditable>|+ App
+            &nbsp;|- UserModel.js
+             |- UserView.js
+            </code></pre>
+          </section>
+        </section>
+
+        <section data-markdown class="oneliner">
+          ## Now it's much easier to find things. *promise*.
+        </section>
+
+        <section data-markdown class="oneliner">
+          ## *perks*.
+        </section>
+
 <!--
         # App Structure
 
-        Too often I see MVC apps that have this folder structure:
-          - app.js
-          - controllers.js
-          - models.js
-          - views.js
-          - index.html
-
-        This is not scalable. It also normally leads to poor performance and poor dependency management.
-
-        As soon as you accept some module system, you can have freedom to consistently and sanely structure your app's files:
-
-        Option 1
-          var UserModel = require('Models/User');
-          var UserView  = require('Views/User');
-
-        Option 2
-          var UserModel = require('User/Model');
-          var UserView  = require('User/View');
-
-        etc.
+        poor performance
 
         Side-benefit - anonymous module declarations based on file name
 
@@ -402,7 +478,7 @@
      if (!window.Showdown){
      var scr = document.createElement('script');
      scr.onload = boom;
-     scr.src = 'https://raw.github.com/github/github-flavored-markdown/gh-pages/scripts/showdown.js';
+     scr.src = '/js/showdown.js';
      document.body.appendChild(scr);
      return;
      }
